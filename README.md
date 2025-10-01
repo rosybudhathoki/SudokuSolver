@@ -1,16 +1,35 @@
 # SudukoSolver
 
-This Python script utilizes backtracking, along with MRV and FA heuristics, to efficiently solve Sudoku puzzles. The Grid class represents the Sudoku grid, and the Backtracking class provides the search algorithm. Running times and success counts for MRV and FA are measured and plotted.
-How to Run
+Sudoku Solver with Backtracking and AC3
 
-    Ensure Python is installed.
-    Run: python sudoku_solver.py
+This project solves Sudoku puzzles using backtracking search, AC3 (arc consistency), and two variable selection heuristics: MRV (Minimum Remaining Values) and First Available. It also measures and visualizes performance.
 
-Results
+Features
 
-    MRV Success: [Count]
-    FA Success: [Count]
-    MRV Time: [Time] seconds
-    FA Time: [Time] seconds
+Grid Representation: Stores domains for all 81 cells, supports reading puzzles from strings and printing the grid.
 
-A scatter plot (running_time_plot.png) illustrates the running times for both heuristics.
+Variable Selection:
+
+FirstAvailable: Picks the first unassigned cell.
+
+MRV: Picks the cell with the smallest domain.
+
+AC3: Enforces arc consistency to reduce search space.
+
+Backtracking Search: Combines inference and variable heuristics.
+
+Performance Visualization: Plots running time comparison between heuristics.
+
+Usage
+
+Place a text file of puzzles (81-character strings) in the project folder.
+
+Run the solver:
+
+python sudoku_solver.py
+
+
+Output includes success counts, running times, and a scatter plot comparing MRV vs First Available.
+
+Dependencies
+pip install matplotlib numpy
