@@ -25,6 +25,7 @@ FirstAvailable RUN TIMES (seconds):
 
 # ALL SOLVED SUDOKU
 Initial Sudoku
+'''
 - - - - - - - - - - - - - 
 | 4 . . | . . . | 8 . 5 | 
 | . 3 . | . . . | . . . | 
@@ -4391,4 +4392,4 @@ Solved Sudoku with First Available in 0.0944 seconds
 | 7 2 9 | 8 6 5 | 1 3 4 | 
 | 8 4 5 | 2 3 1 | 7 9 6 | 
 | 6 1 3 | 4 7 9 | 8 5 2 | 
-- - - - - - - - - - - - - 
+- - - - - - - - - - - - - '''
