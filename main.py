@@ -108,49 +108,32 @@ class Grid:
                 self._cells.append(row)
                 row = []
             
-    def print(self):
-        """
-        Prints the grid on the screen. Example:
 
-        - - - - - - - - - - - - - 
-        | 4 . . | . . . | 8 . 5 | 
-        | . 3 . | . . . | . . . | 
-        | . . . | 7 . . | . . . | 
-        - - - - - - - - - - - - - 
-        | . 2 . | . . . | . 6 . | 
-        | . . . | . 8 . | 4 . . | 
-        | . . . | . 1 . | . . . | 
-        - - - - - - - - - - - - - 
-        | . . . | 6 . 3 | . 7 . | 
-        | 5 . . | 2 . . | . . . | 
-        | 1 . 4 | . . . | . . . | 
-        - - - - - - - - - - - - - 
-        """
+    def print(self, file=None):
         for _ in range(self._width + 4):
-            print('-', end=" ")
-        print()
+            print('-', end=" ", file=file)
+        print(file=file)
 
         for i in range(self._width):
-
-            print('|', end=" ")
-
+            print('|', end=" ", file=file)
             for j in range(self._width):
                 if len(self._cells[i][j]) == 1:
-                    print(self._cells[i][j], end=" ")
+                    print(self._cells[i][j], end=" ", file=file)
                 elif len(self._cells[i][j]) > 1:
-                    print('.', end=" ")
+                    print('.', end=" ", file=file)
                 else:
-                    print(';', end=" ")
+                    print(';', end=" ", file=file)
 
                 if (j + 1) % 3 == 0:
-                    print('|', end=" ")
-            print()
+                    print('|', end=" ", file=file)
+            print(file=file)
 
             if (i + 1) % 3 == 0:
                 for _ in range(self._width + 4):
-                    print('-', end=" ")
-                print()
-        print()
+                    print('-', end=" ", file=file)
+                print(file=file)
+        print(file=file)
+
 
     def print_domains(self):
         """
@@ -411,54 +394,40 @@ running_time_first_available_all = []
 count_MRV = 0
 count_first_available = 0
 start_MRV = time.time()
-# Measure running time for MRV
-for p in puzzles:
-    grid = Grid()
-    grid.read_file(p)
+# Solve each puzzle with both MRV and FirstAvailable, printing grids and times
+with open("output.txt", "w") as f:  # Open file for writing
+    for p in puzzles:
+        grid = Grid()
+        grid.read_file(p)
+        print("----------------------------------------------------------------------------------------", file=f)
+        print("Initial Sudoku", file=f)
+        grid.print(file=f)  # update the print method of Grid to accept file argument
 
-    ac3 = AC3()
-    start_mrv = time.time()
-    result_MRV = backtracking_mrv.search(grid, var_selector_MRV, ac3)
-    end_mrv = time.time()
-    
-    if result_MRV.is_solved():
-        count_MRV += 1
+        # --- MRV ---
+        ac3_mrv = AC3()
+        start_mrv = time.time()
+        result_MRV = backtracking_mrv.search(grid, var_selector_MRV, ac3_mrv)
+        end_mrv = time.time()
+        elapsed_mrv = end_mrv - start_mrv
 
-    running_time_mrv_all.append(end_mrv - start_mrv)
-end_MRV = time.time()
+        if result_MRV.is_solved():
+            count_MRV += 1
+            print(f"Solved Sudoku with Minimum Remaining Values (MRV) in {elapsed_mrv:.4f} seconds", file=f)
+            result_MRV.print(file=f)  # print solved grid to file
+            running_time_mrv_all.append(elapsed_mrv)
 
-# Measure running time for FirstAvailable
-start_FA = time.time()
-for p in puzzles:
-    grid = Grid()
-    grid.read_file(p)
+        # --- FirstAvailable ---
+        ac3_fa = AC3()
+        start_fa = time.time()
+        result_first_available = backtracking_first_available.search(grid, var_selector_first, ac3_fa)
+        end_fa = time.time()
+        elapsed_fa = end_fa - start_fa
 
-    ac3 = AC3()
-    start_first_available = time.time()
-    result_first_available = backtracking_first_available.search(grid, var_selector_first, ac3)
-    end_first_available = time.time()
-    if result_first_available.is_solved():
-        count_first_available += 1
-    running_time_first_available_all.append(end_first_available - start_first_available)
-end_FA = time.time()
-
-# Print results
-print("------------------------------------------------------------------------------------------------")
-print("Total Success Count MRV:", count_MRV)
-print("Total Success Count FirstAvailable:", count_first_available)
-print("Total time taken for the MRV to run is : ", end_MRV - start_MRV, " seconds.") 
-print("Total time taken for the FA to run is : ", end_FA - start_FA, " seconds.")
-# Plot results
-print("------------------------------------------------------------------------------------------------")
-print("MRV RUN TIMES: ")
-print(running_time_mrv_all)
-print("This is the maximum it took for MRV to solve a puzzle : ", max(running_time_mrv_all))
-print("------------------------------------------------------------------------------------------------")
-
-print("FA RUN TIMES: ")
-print(running_time_first_available_all)
-print("This is the maximum it took for FirstAvailable to solve a puzzle : ",max(running_time_first_available_all))
-print("------------------------------------------------------------------------------------------------")
+        if result_first_available.is_solved():
+            count_first_available += 1
+            print(f"Solved Sudoku with First Available in {elapsed_fa:.4f} seconds", file=f)
+            result_first_available.print(file=f)  # print solved grid to file
+            running_time_first_available_all.append(elapsed_fa)
 
 #Plot results
 plotter = PlotResults()
